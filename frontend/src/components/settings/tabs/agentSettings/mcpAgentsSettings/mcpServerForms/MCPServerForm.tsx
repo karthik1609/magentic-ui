@@ -64,46 +64,59 @@ const MCPServerForm: React.FC<MCPServerFormProps> = ({ server, idx, handleServer
     }
 
 
+    const headerContent = (
+        <Flex align="center" gap="small">
+            <Tooltip title={serverNameError ? 'Server Name is required and can only contain letters and numbers.' : ''} open={serverNameError ? undefined : false}>
+                <Input
+                    value={server.server_name}
+                    placeholder={`Server Name e.g. `}
+                    status={serverNameError ? 'error' : ''}
+                    onChange={e => handleServerChange(idx, { ...server, server_name: e.target.value })}
+
+                />
+            </Tooltip>
+            <Button danger onClick={(e) => { e.stopPropagation(); removeServer(idx); }}>
+                Remove
+            </Button>
+        </Flex>
+    );
+
+    const panelContent = (
+        <Flex vertical gap="small">
+            <Form.Item label="Server Type">
+                <Select
+                    value={server.server_params.type}
+                    onChange={type => {
+                        // Reset params to default for the selected type
+                        const newParams = MCP_SERVER_TYPES[type]?.defaultValue
+                        handleServerChange(idx, {
+                            ...server,
+                            server_params: newParams,
+                        });
+                    }}
+                    options={Object.values(MCP_SERVER_TYPES)}
+                    dropdownMatchSelectWidth={false}
+                    popupClassName="model-dropdown"
+                    getPopupContainer={(triggerNode) => triggerNode.parentNode as HTMLElement}
+                    dropdownAlign={{ offset: [0, 4] }}
+                    placement="bottomLeft"
+                    listHeight={256}
+                />
+            </Form.Item>
+            {ServerForm}
+        </Flex>
+    );
+
+    const items = [
+        {
+            key: "1",
+            label: headerContent,
+            children: panelContent
+        }
+    ];
+
     return (
-        <Collapse key={idx} defaultActiveKey={["1"]} style={{width: "100%"}}>
-            <Collapse.Panel
-                key="1"
-                header={
-                    <Flex align="center" gap="small">
-                        <Tooltip title={serverNameError ? 'Server Name is required and can only contain letters and numbers.' : ''} open={serverNameError ? undefined : false}>
-                            <Input
-                                value={server.server_name}
-                                placeholder={`Server Name e.g. `}
-                                status={serverNameError ? 'error' : ''}
-                                onChange={e => handleServerChange(idx, { ...server, server_name: e.target.value })}
-                                onClick={(e) => e.stopPropagation()}
-                            />
-                        </Tooltip>
-                        <Button danger onClick={(e) => { e.stopPropagation(); removeServer(idx); }}>
-                            Remove
-                        </Button>
-                    </Flex>
-                }
-            >
-                <Flex vertical gap="small">
-                    <Form.Item label="Server Type">
-                        <Select
-                            value={server.server_params.type}
-                            onChange={type => {
-                                // Reset params to default for the selected type
-                                const newParams = MCP_SERVER_TYPES[type]?.defaultValue
-                                handleServerChange(idx, {
-                                    ...server,
-                                    server_params: newParams,
-                                });
-                            }}
-                            options={Object.values(MCP_SERVER_TYPES)}
-                        />
-                    </Form.Item>
-                    {ServerForm}
-                </Flex>
-            </Collapse.Panel>
-        </Collapse>
+        <Collapse key={idx} defaultActiveKey={["1"]} style={{width: "100%"}} items={items} />
     );
 };
 

@@ -1,13 +1,12 @@
-import React from "react";
-import { PanelLeftClose, PanelLeftOpen, Plus } from "lucide-react";
-import { Tooltip } from "antd";
+import React, { useContext } from "react";
+import { Settings } from "lucide-react";
+import { Tooltip, Divider } from "antd";
 import { appContext } from "../hooks/provider";
 import { useConfigStore } from "../hooks/store";
-import { Settings } from "lucide-react";
 import SignInModal from "./signin";
 import SettingsModal from "./settings/SettingsModal";
-import logo from "../assets/logo.svg";
 import { Button } from "./common/Button";
+import { LoginButton, LogoutButton, UserProfileButton } from "./auth/AuthButtons";
 
 type ContentHeaderProps = {
   onMobileMenuToggle: () => void;
@@ -22,90 +21,72 @@ const ContentHeader = ({
   onToggleSidebar,
   onNewSession,
 }: ContentHeaderProps) => {
-  const { user } = React.useContext(appContext);
+  const { user } = useContext(appContext);
   useConfigStore();
   const [isEmailModalOpen, setIsEmailModalOpen] = React.useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = React.useState(false);
 
-  return (
-    <div className="sticky top-0 bg-primary">
-      <div className="flex h-16 items-center justify-between">
-        {/* Left side: Text and Sidebar Controls */}
-        <div className="flex items-center">
-          {/* Sidebar Toggle */}
-          <Tooltip title={isSidebarOpen ? "Close Sidebar" : "Open Sidebar"}>
-            <Button
-              variant="tertiary"
-              size="sm"
-              icon={
-                isSidebarOpen ? (
-                  <PanelLeftClose strokeWidth={1.5} className="h-6 w-6" />
-                ) : (
-                  <PanelLeftOpen strokeWidth={1.5} className="h-6 w-6" />
-                )
-              }
-              onClick={onToggleSidebar}
-              className="!px-0 transition-colors hover:text-accent"
-            />
-          </Tooltip>
+  const isLoggedIn = user && user.email && user.email !== "guest";
 
-          {/* New Session Button */}
-          <div className="w-[40px]">
-            {!isSidebarOpen && (
-              <Tooltip title="Create new session">
-                <Button
-                  variant="tertiary"
-                  size="sm"
-                  icon={<Plus className="w-6 h-6" />}
-                  onClick={onNewSession}
-                  className="transition-colors hover:text-accent"
-                />
-              </Tooltip>
-            )}
-          </div>
-          <div className="flex items-center space-x-2">
-            <img src={logo} alt="Magentic-UI Logo" className="h-10 w-10" />
-            <div className="text-primary text-2xl font-bold">Magentic-UI</div>
+  return (
+    <div className="sticky top-0 bg-[#1a1a1a] border-b border-[#2a2a2a] z-50">
+      {/* Main Header */}
+      <div className="flex h-16 items-center justify-between px-6">
+        {/* Left side: Brand */}
+        <div className="flex items-center space-x-4">
+          {/* Brand Logo with Toggle Button */}
+          <div className="flex items-center">
+            <button 
+              onClick={onToggleSidebar}
+              className="w-8 h-8 mr-3 bg-[#2a2a2a] hover:bg-[#333333] rounded-md flex items-center justify-center transition-all duration-200 hover:shadow-md focus:outline-none"
+              aria-label="Toggle navigation"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+            <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-gradient-to-br  flex items-center justify-center shadow-md">
+                  <img src="/images/bg/fx-logo.svg" alt="fusionAIx Logo" className="w-12 h-12" />
+                </div>
+              <div>
+                <div className="text-white text-lg font-semibold">fusionAIx Studio</div>
+                <div className="text-gray-400 text-xs">AI Agent Management Platform</div>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* User Profile and Settings */}
+        {/* Right side: User Profile */}
         <div className="flex items-center space-x-4">
-          {/* User Profile */}
-          {user && (
-            <Tooltip title="View or update your profile">
-              <div
-                className="flex items-center space-x-2 cursor-pointer"
-                onClick={() => setIsEmailModalOpen(true)}
-              >
-                {user.avatar_url ? (
-                  <img
-                    className="h-8 w-8 rounded-full"
-                    src={user.avatar_url}
-                    alt={user.name}
-                  />
-                ) : (
-                  <div className="bg-blue-400 h-8 w-8 rounded-full flex items-center justify-center text-gray-800 font-semibold hover:text-message">
-                    {user.name?.[0]}
-                  </div>
-                )}
-              </div>
-            </Tooltip>
-          )}
+          <span className="text-secondary text-sm">fusionaix.com</span>
+          
+          {/* Authentication Buttons */}
+          <div className="flex items-center space-x-3">
+            {isLoggedIn ? (
+              <>
+                {/* User Profile */}
+                <UserProfileButton onClick={() => setIsEmailModalOpen(true)} />
+                
+                <Divider type="vertical" className="h-6 bg-secondary" />
+                
+                {/* Logout Button */}
+                <LogoutButton />
+              </>
+            ) : (
+              <LoginButton />
+            )}
+          </div>
 
           {/* Settings Button */}
-          <div className="text-primary">
-            <Tooltip title="Settings">
-              <Button
-                variant="tertiary"
-                size="sm"
-                icon={<Settings className="h-8 w-8" />}
-                onClick={() => setIsSettingsOpen(true)}
-                className="!px-0 transition-colors hover:text-accent"
-                aria-label="Settings"
-              />
-            </Tooltip>
-          </div>
+          <Tooltip title="Settings">
+            <Button
+              variant="tertiary"
+              size="sm"
+              icon={<Settings className="h-5 w-5" />}
+              onClick={() => setIsSettingsOpen(true)}
+              className="!px-2 transition-colors hover:text-accent hover:bg-blue-400/10 rounded"
+              aria-label="Settings"
+            />
+          </Tooltip>
         </div>
       </div>
 

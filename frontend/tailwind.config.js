@@ -5,6 +5,14 @@ module.exports = {
     `./src/components/**/*.{js,jsx,ts,tsx}`,
   ],
   theme: {
+    borderRadius: {
+      DEFAULT: '8px',
+      'sm': '4px',
+      'md': '8px',
+      'lg': '12px',
+      'xl': '16px',
+      '2xl': '20px',
+    },
     extend: {
       keyframes: {
         'fade-in': {
@@ -24,6 +32,16 @@ module.exports = {
         DEFAULT: {
           css: {
             maxWidth: "100ch",
+            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+            h4: {
+              fontWeight: 600,
+            },
+            h5: {
+              fontWeight: 600,
+            },
+            h6: {
+              fontWeight: 600,
+            },
           },
         },
       },

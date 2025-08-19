@@ -1,70 +1,79 @@
 .dark {
   --color-bg-primary: #1a1a1a;
-  --color-bg-secondary: #a88da841;
-  --color-bg-light: #3a3a3a;
-  --color-bg-tertiary: #444444;
-  --color-bg-opposite: #edf2f7;
+  --color-bg-secondary: rgba(123, 97, 255, 0.1);
+  --color-bg-light: #2a2a2a;
+  --color-bg-tertiary: #333333;
+  --color-bg-opposite: #F9FBFE;
   --color-bg-white: #ffffff;
   --color-bg-dark: #1a1a1a;
-  --color-bg-accent: #777777;
+  --color-bg-accent: #0076FF;
   --color-text-primary: #ffffff;
-  --color-text-secondary: #e5e5e58f;
-  --color-text-accent: #e5e5e5;
-  --color-border-primary: #ffffff30;
-  --color-border-secondary: #e5e5e530;
-  --color-border-accent: #1a1a1a;
-  --color-warning-primary: #F6A147;
+  --color-text-secondary: rgba(255, 255, 255, 0.75);
+  --color-text-accent: #4D9FFF;
+  --color-border-primary: rgba(0, 118, 255, 0.3);
+  --color-border-secondary: rgba(123, 97, 255, 0.2);
+  --color-border-accent: #0076FF;
+  --color-warning-primary: #FF9800;
   --color-text-message: #000000;
 
-  --color-magenta-400: #F2E5F2;
-  --color-magenta-700: #EECBEE;
-  --color-magenta-800: #BF3AC3;
-  --color-magenta-900: #953CA3;
+  --color-magenta-400: #9A85FF;
+  --color-magenta-700: #7B61FF;
+  --color-magenta-800: #7B61FF;
+  --color-magenta-900: #5A43CC;
 
-  --color-blue-400: #EDF4FB;
-  --color-blue-700: #A0D6FF;
-  --color-blue-800: #0078d4;
-  --color-blue-900: #0062ad;
+  --color-blue-400: #4D9FFF;
+  --color-blue-700: #0076FF;
+  --color-blue-800: #0076FF;
+  --color-blue-900: #0055BA;
 
   --color-gary-700: #e1e1e1;
-  --color-gray-800: #5f5f5f;
+  --color-gray-800: #475569;
 }
 
 .light {
-  --color-bg-primary: #ffffff;
-  --color-bg-secondary: #f1e9f1;
-  --color-bg-light: #f9fafb;
-  --color-bg-tertiary: #f3f6f9;
+  --color-bg-primary: #FFFFFF;
+  --color-bg-secondary: rgba(123, 97, 255, 0.05);
+  --color-bg-light: #F9FBFE;
+  --color-bg-tertiary: rgba(0, 118, 255, 0.03);
   --color-bg-opposite: #2a2a2a;
   --color-bg-white: #ffffff;
   --color-bg-dark: #1a1a1a;
-  --color-bg-accent: #444444;
-  --color-text-primary: #000000;
-  --color-text-secondary: #4a5568;
-  --color-text-accent: #444444;
-  --color-border-primary: #e2e8f0;
-  --color-border-secondary: #edf2f7;
-  --color-border-accent: #444444;
-  --color-warning-primary: #F6A147;
-  --color-text-message: #000000;
+  --color-bg-accent: #0076FF;
+  --color-text-primary: #14253A;
+  --color-text-secondary: #475569;
+  --color-text-accent: #0076FF;
+  --color-border-primary: rgba(0, 118, 255, 0.1);
+  --color-border-secondary: rgba(0, 118, 255, 0.05);
+  --color-border-accent: #0076FF;
+  --color-warning-primary: #FF9800;
+  --color-text-message: #14253A;
 
-  --color-magenta-400: #F2E5F2;
-  --color-magenta-700: #EECBEE;
-  --color-magenta-800: #BF3AC3;
-  --color-magenta-900: #953CA3;
+  --color-magenta-400: #9A85FF;
+  --color-magenta-700: #7B61FF;
+  --color-magenta-800: #7B61FF;
+  --color-magenta-900: #5A43CC;
 
-  --color-blue-400: #EDF4FB;
-  --color-blue-700: #A0D6FF;
-  --color-blue-800: #0078d4;
-  --color-blue-900: #0062ad;
+  --color-blue-400: #4D9FFF;
+  --color-blue-700: #0076FF;
+  --color-blue-800: #0076FF;
+  --color-blue-900: #0055BA;
 
   --color-gary-700: #e1e1e1;
-  --color-gray-800: #5f5f5f;
+  --color-gray-800: #475569;
 }
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.9; }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 2s ease-in-out infinite;
+}
 
 /* @layer base {
     body {
@@ -95,24 +104,37 @@ html {
   /* display: table; */
   margin: auto;
   height: 100%;
-  font-family: "Segoe UI", "Open Sans", sans-serif;;
+  font-family: "Inter", "Roboto", "Helvetica", "Arial", sans-serif;
 }
 
 body {
-  padding: 0px 64px 0px 64px;
-  @apply px-4 md:px-8 lg:px-16 w-full !important;
-  margin: 0px auto;
+  padding: 0px;
+  margin: 0px;
   background: transparent;
-  /* border: 2px solid green; */
-  width: 100%;
   height: 100%;
   font-size: 0.9rem; /* Ensure consistent font size */
-  font-family: "Segoe UI", "Open Sans", sans-serif;;
+  font-family: "Inter", "Roboto", "Helvetica", "Arial", sans-serif;
+  overflow: auto;
+  position: relative;
 }
 
 * {
   font-size: 0.9rem;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
 }
+
+/* Exclude dropdown related elements from all transitions to prevent rendering issues */
+.ant-select-dropdown,
+.ant-dropdown,
+.ant-select-item,
+.ant-select-item-option,
+.ant-dropdown-menu-item,
+.ant-dropdown-menu {
+  transition: none !important;
+}
+
+/* No custom overrides for dropdowns */
 
 /* @import "antd/dist/antd.css"; */
 
@@ -153,7 +175,7 @@ body {
 }
 
 .ant-switch-checked {
-  background: var(--color-magenta-900) !important;
+  background: linear-gradient(135deg, #0076FF 0%, #7B61FF 100%) !important;
 }
 .ant-switch {
   background-color: #3a3a3a;
@@ -353,9 +375,13 @@ a:hover {
 }
 .ant-btn-primary {
   @apply bg-accent text-white !important;
+  background: linear-gradient(135deg, #0076FF 0%, #7B61FF 100%) !important;
 }
 .ant-btn-primary:hover {
-  @apply bg-accent text-white drop-shadow-md !important;
+  @apply text-white drop-shadow-md !important;
+  background: linear-gradient(135deg, #0055BA 0%, #5A43CC 100%) !important;
+  box-shadow: 0px 4px 15px rgba(0, 118, 255, 0.3) !important;
+  transform: translateY(-1px);
 }
 .ant-modal-close {
   @apply text-primary   duration-200   !important;
@@ -389,6 +415,150 @@ a:hover {
   max-height: 250px;
   overflow: auto;
   @apply scroll !important;
+  z-index: 1070 !important;
+}
+
+/* Fix for Ant Design Select dropdowns */
+.ant-select-dropdown {
+  z-index: 9999 !important;
+  pointer-events: all !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
+  background: #2a2a2a !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3) !important;
+  border-radius: 8px !important;
+  margin-top: 4px !important;
+  /* Remove fixed positioning which might cause issues */
+  transform: none !important; /* Prevent unwanted transforms */
+}
+
+.ant-select-dropdown .ant-select-item {
+  color: white !important;
+  background-color: transparent !important;
+  padding: 8px 12px !important;
+}
+
+.ant-select-dropdown .ant-select-item-option-selected {
+  background-color: rgba(0, 118, 255, 0.2) !important;
+}
+
+.ant-select-dropdown .ant-select-item-option-active {
+  background-color: rgba(0, 118, 255, 0.1) !important;
+}
+
+/* Dropdown styling */
+.model-dropdown {
+  background-color: #2a2a2a !important;
+  border-radius: 8px !important;
+  padding: 4px !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3) !important;
+  max-height: 300px !important;
+  z-index: 1050 !important;
+}
+
+/* Additional dropdown fixes */
+.ant-select-dropdown,
+.ant-dropdown {
+  pointer-events: auto !important;
+}
+
+/* Dropdown item styles */
+.ant-select-item {
+  padding: 8px 12px !important;
+}
+
+.ant-select-item-option-selected {
+  background-color: rgba(0, 118, 255, 0.2) !important;
+  font-weight: 500 !important;
+}
+
+.ant-select-item-option-active {
+  background-color: rgba(0, 118, 255, 0.1) !important;
+}
+
+.ant-select-dropdown-hidden {
+  display: none !important;
+}
+
+/* Fix for dropdown rendering issues */
+.ant-select-dropdown {
+  position: absolute !important;
+}
+
+/* Ensure dropdown has proper dimensions */
+.agent-config-tabs .ant-select-dropdown {
+  min-width: 180px !important;
+  max-width: 280px !important;
+  max-height: 320px !important;
+}
+
+/* Fix for dropdown positioning */
+.ant-select-dropdown-placement-bottomLeft,
+.ant-select-dropdown-placement-bottomRight,
+.ant-select-dropdown-placement-bottom {
+  transform: translateY(0) !important;
+}
+
+/* Fix for positioning relative to parent elements */
+.agent-config-tabs .ant-collapse-content,
+.agent-config-tabs .ant-form-item,
+.agent-config-tabs .ant-card-body {
+  overflow: visible !important;
+}
+
+/* Ensure select has proper z-index */
+.ant-select-focused {
+  z-index: 1051 !important;
+  position: relative !important;
+}
+
+/* Ensure model dropdown appears consistently */
+.model-dropdown {
+  position: absolute !important;
+  z-index: 1051 !important;
+  overflow: auto !important;
+  pointer-events: auto !important;
+}
+
+/* Fix for model selector collapse behavior */
+.model-selector-collapse .ant-collapse-header {
+  cursor: default !important;
+}
+
+.model-selector-collapse .ant-collapse-content {
+  height: auto !important;
+  overflow: visible !important;
+}
+
+/* Make sure select dropdown is clickable and above other elements */
+.model-selector-collapse .ant-select {
+  position: relative;
+  z-index: 2;
+  cursor: pointer !important;
+}
+
+/* Ensure the collapse arrow is still clickable */
+.model-selector-collapse .ant-collapse-expand-icon {
+  cursor: pointer !important;
+  z-index: 3;
+  position: relative;
+}
+
+/* Fix for selection click handling */
+.ant-select-item-option {
+  cursor: pointer !important;
+}
+
+/* Ensure dropdown closes after selection */
+.ant-select-item-option-active:hover,
+.ant-select-item-option-selected:hover {
+  background-color: rgba(0, 118, 255, 0.2) !important;
+}
+
+.ant-select-focused .ant-select-selector {
+  box-shadow: 0 0 0 2px rgba(0, 118, 255, 0.2) !important;
+  border-color: var(--color-blue-700) !important;
 }
 
 .ant-collapse {
@@ -450,4 +620,84 @@ div#gatsby-focus-wrapper {
 
 .ant-input {
   @apply bg-primary !important;
+}
+
+/* Agent Config Panel specific styles */
+.agent-config-tabs .ant-tabs-content-holder {
+  @apply bg-primary !important;
+  overflow: auto;
+}
+
+.agent-config-tabs .ant-tabs-tab {
+  @apply text-primary !important;
+}
+
+.agent-config-tabs .ant-tabs-content {
+  height: 100%;
+}
+
+/* Fix for dropdown positioning in agent config */
+.agent-config-tabs .ant-select-dropdown {
+  z-index: 10500 !important;
+  max-height: 300px !important;
+  overflow-y: auto !important;
+}
+
+/* Fix for dropdown positioning on Advanced view */
+.agent-config-tabs .ant-select {
+  width: auto;
+  min-width: 180px;
+}
+
+.agent-config-tabs-wrapper {
+  position: relative;
+  z-index: 1;
+}
+
+.agent-config-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  @apply text-accent !important;
+}
+
+.agent-config-tabs .ant-card {
+  @apply bg-tertiary border-secondary !important;
+}
+
+.agent-config-tabs .ant-card-head {
+  @apply bg-tertiary border-secondary text-primary !important;
+}
+
+.agent-config-tabs .ant-card-body {
+  @apply bg-tertiary text-primary !important;
+}
+
+.agent-config-tabs .ant-typography {
+  @apply text-primary !important;
+}
+
+.agent-config-tabs .ant-select-selector {
+  @apply bg-secondary border-secondary text-primary !important;
+}
+
+.agent-config-tabs .ant-input {
+  @apply bg-secondary border-secondary text-primary !important;
+}
+
+.agent-config-tabs .ant-switch {
+  @apply bg-secondary !important;
+}
+
+.agent-config-tabs .ant-switch-checked {
+  @apply bg-magenta-800 !important;
+}
+
+.agent-config-tabs .ant-list {
+  @apply bg-tertiary !important;
+}
+
+.agent-config-tabs .ant-list-item {
+  @apply border-secondary !important;
+}
+
+.agent-config-tabs .ant-empty-description {
+  @apply text-secondary !important;
 }

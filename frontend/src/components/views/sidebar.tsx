@@ -12,6 +12,7 @@ import {
   MoreVertical,
   StopCircle,
   Server,
+  Bot,
 } from "lucide-react";
 import type { Session, RunStatus } from "../types/datamodel";
 import SubMenu from "../common/SubMenu";
@@ -120,7 +121,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   : "cursor-pointer hover:bg-tertiary"
               } ${
                 currentSession?.id === s.id
-                  ? " border-l-2 border-magenta-800 bg-secondary"
+                  ? " border-l-2 border-blue-700 bg-secondary/50"
                   : ""
               }`}
               onClick={() => !isLoading && onSelectSession(s)}
@@ -208,7 +209,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     }
 
     return (
-      <div className="h-full border-r border-secondary">
+      <div className="h-full border-r border-[#2a2a2a] bg-[#1a1a1a] shadow-sm">
         <div className="mb-4">
           <SubMenu
             items={[
@@ -221,6 +222,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 id: "saved_plan",
                 label: "Saved Plans",
                 icon: <Archive className="w-4 h-4" />,
+              },
+              {
+                id: "agents",
+                label: "Agents",
+                icon: <Bot className="w-4 h-4" />,
               },
             ]}
             activeItem={activeSubMenuItem}
@@ -251,7 +257,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <div className="mr-2 w-full">
                 <Tooltip title="Create new session">
                   <Button
-                    className="w-full"
+                    className="w-full bg-[#7B61FF] hover:bg-[#6A4FEB] text-white rounded-md"
                     variant="primary"
                     size="md"
                     icon={<Plus className="w-4 h-4" />}

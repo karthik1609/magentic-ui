@@ -5,6 +5,7 @@ import React, {
   useContext,
   useMemo,
 } from "react";
+import { PlusCircle, MessageSquare } from "lucide-react";
 import { message, Spin } from "antd";
 import { useConfigStore } from "../../hooks/store";
 import { appContext } from "../../hooks/provider";
@@ -18,6 +19,8 @@ import { RunStatus } from "../types/datamodel";
 import ContentHeader from "../contentheader";
 import PlanList from "../features/Plans/PlanList";
 import McpServersList from "../features/McpServersConfig/McpServersList";
+import AgentConfigPanel from "../features/AgentConfig/AgentConfigPanel";
+import LeftNavigation from "../LeftNavigation";
 
 interface SessionWebSocket {
   socket: WebSocket;
@@ -32,13 +35,15 @@ export const SessionManager: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [editingSession, setEditingSession] = useState<Session | undefined>();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
+  const [isNavExpanded, setIsNavExpanded] = useState(() => {
     if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("sessionSidebar");
+      const stored = localStorage.getItem("navExpanded");
       return stored !== null ? JSON.parse(stored) : true;
     }
     return true;
   });
+  
+
   const [messageApi, contextHolder] = message.useMessage();
   const [sessionSockets, setSessionSockets] = useState<SessionWebSockets>({});
   const [sessionRunStatuses, setSessionRunStatuses] = useState<{
@@ -52,9 +57,11 @@ export const SessionManager: React.FC = () => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      localStorage.setItem("sessionSidebar", JSON.stringify(isSidebarOpen));
+      localStorage.setItem("navExpanded", JSON.stringify(isNavExpanded));
     }
-  }, [isSidebarOpen]);
+  }, [isNavExpanded]);
+  
+
 
   const fetchSessions = useCallback(async () => {
     if (!user?.email) return;
@@ -457,74 +464,103 @@ export const SessionManager: React.FC = () => {
       <ContentHeader
         isMobileMenuOpen={isMobileMenuOpen}
         onMobileMenuToggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        isSidebarOpen={isSidebarOpen}
-        onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+        isSidebarOpen={isNavExpanded}
+        onToggleSidebar={() => setIsNavExpanded(!isNavExpanded)}
         onNewSession={() => handleEditSession()}
       />
 
       <div className="flex flex-1 relative">
-        <div
-          className={`absolute left-0 top-0 h-full transition-all duration-200 ease-in-out ${
-            isSidebarOpen ? "w-77" : "w-0"
-          }`}
-        >
-          <Sidebar
-            isOpen={isSidebarOpen}
+        <div className={`transition-all duration-500 ease-in-out flex-shrink-0 ${isNavExpanded ? 'w-60' : 'w-16'}`}>
+          <LeftNavigation 
+            activeSection={activeSubMenuItem || "chat"}
+            isExpanded={isNavExpanded}
+            onToggle={() => setIsNavExpanded(!isNavExpanded)}
             sessions={sessions}
             currentSession={session}
-            onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
-            onSelectSession={handleSelectSession}
-            onEditSession={handleEditSession}
-            onDeleteSession={handleDeleteSession}
-            isLoading={isLoading}
             sessionRunStatuses={sessionRunStatuses}
-            activeSubMenuItem={activeSubMenuItem}
-            onSubMenuChange={setActiveSubMenuItem}
-            onStopSession={(sessionId: number) => {
-              if (sessionId === undefined || sessionId === null) return;
-              const id = Number(sessionId);
-              // Find the session's socket and close it, update status
-              const ws = sessionSockets[id]?.socket;
-              if (ws && ws.readyState === WebSocket.OPEN) {
-                ws.send(
-                  JSON.stringify({
-                    type: "stop",
-                    reason: "Cancelled by user (sidebar)",
-                  })
-                );
-                ws.close();
+            onSelectSession={handleSelectSession}
+            onNewSession={() => handleEditSession()}
+            isLoading={isLoading}
+            onNavigate={(section) => {
+              if (section === "new") {
+                handleEditSession();
+              } else if (section === "settings") {
+                setActiveSubMenuItem("agents");
+              } else if (section === "home" || section === "chat") {
+                setActiveSubMenuItem(section); // Set to home or chat
+              } else {
+                setActiveSubMenuItem(section);
               }
-              setSessionRunStatuses((prev) => ({
-                ...prev,
-                [id]: "stopped",
-              }));
-            }}
+            }} 
           />
         </div>
 
-        <div
-          className={`flex-1 transition-all -mr-4 duration-200 w-[200px] ${
-            isSidebarOpen ? "ml-64" : "ml-0"
-          }`}
-        >
+        <div className="flex-1 transition-all duration-500 ease-in-out transform overflow-hidden">
           {
           activeSubMenuItem === "mcp_servers" ? (
-            <div className="h-full overflow-hidden pl-4">
+            <div className="h-full overflow-hidden">
               <McpServersList />
             </div>
           ) : activeSubMenuItem === "saved_plan" ? (
-            <div className="h-full overflow-hidden pl-4">
+            <div className="h-full overflow-hidden">
               <PlanList
                 onTabChange={setActiveSubMenuItem}
                 onSelectSession={handleSelectSession}
                 onCreateSessionFromPlan={handleCreateSessionFromPlan}
               />
             </div>
-          ) : session && sessions.length > 0 ? (
-            <div className="pl-4">{chatViews}</div>
+          ) :           activeSubMenuItem === "agents" ? (
+            <div className="h-full overflow-hidden">
+              <AgentConfigPanel />
+            </div>
+          ) : activeSubMenuItem === "chat" ? (
+            <div className="h-full overflow-hidden p-6">
+              {session && sessions.length > 0 ? (
+                <div>
+                  <div className="flex items-center justify-between mb-6">
+                    <div>
+                      <h2 className="text-xl font-semibold text-white">{session.name}</h2>
+                      <p className="text-gray-400 text-sm">Active session</p>
+                    </div>
+                    {session && session.id && sessionRunStatuses[session.id] && (
+                      <div className="px-3 py-1 bg-green-900/20 text-green-400 rounded-full text-xs flex items-center">
+                        <div className="w-2 h-2 rounded-full bg-green-400 mr-2 animate-pulse"></div>
+                        Active
+                      </div>
+                    )}
+                  </div>
+                  {chatViews}
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center h-full">
+                  <div className="text-center max-w-md">
+                    <svg className="w-20 h-20 mx-auto mb-6 text-gray-600 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+                    </svg>
+                    <h3 className="text-xl font-medium text-white mb-2">No Active Session</h3>
+                    <p className="text-gray-400 mb-8">Create a new session to start chatting with the AI assistant</p>
+                    <button 
+                      onClick={() => handleEditSession()}
+                      disabled={isLoading}
+                      className="bg-gradient-to-br from-blue-600 to-blue-400 hover:from-blue-700 hover:to-blue-500 text-white py-3 px-6 rounded-lg flex items-center justify-center gap-2 text-base font-medium transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg shadow-md mx-auto"
+                    >
+                      <PlusCircle className="w-5 h-5" />
+                      New Session
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           ) : (
-            <div className="flex items-center justify-center h-full text-secondary">
-              <Spin size="large" tip={"Loading..."} />
+            <div className="h-full overflow-hidden p-6 flex items-center justify-center">
+              <div className="text-center">
+                <div className="w-20 h-20 bg-gradient-to-br rounded-xl flex items-center justify-center mx-auto mb-5 shadow-lg hover:shadow-xl transition-all duration-300">
+                  <img src="/images/bg/fx-logo.svg" alt="fusionAIx Logo" className="w-12 h-12" />
+                </div>
+                <h2 className="text-2xl font-semibold text-white">Welcome to fusionAIx Studio</h2>
+                <p className="text-gray-400 mb-2">Your AI-powered workspace for enhanced productivity</p>
+                <p className="text-gray-500 text-sm">Experience the future of work with our intelligent assistant.</p>
+              </div>
             </div>
           )}
         </div>

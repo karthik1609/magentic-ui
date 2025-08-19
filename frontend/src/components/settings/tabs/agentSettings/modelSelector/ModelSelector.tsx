@@ -110,6 +110,15 @@ export const PROVIDER_FORM_MAP: Record<string, { label: string, defaultValue: Mo
 };
 
 const ModelSelector: React.FC<ModelSelectorProps> = ({ onChange, value }) => {
+  // Use activeKey to control the collapse state
+  const [activeKey, setActiveKey] = React.useState<string[]>(['1']);
+
+  // Define selectClickHandler before using it
+  const selectClickHandler = (e: React.MouseEvent) => {
+    // Stop propagation to prevent collapse panel from toggling
+    e.stopPropagation();
+  };
+
   const provider = value?.provider;
   const providerFormEntry = provider ? PROVIDER_FORM_MAP[provider] : undefined;
   const FormComponent = providerFormEntry?.form;
@@ -148,43 +157,71 @@ const ModelSelector: React.FC<ModelSelectorProps> = ({ onChange, value }) => {
     hideAdvancedToggles = true;
   }
 
+  const headerContent = (
+    <Flex gap="small" align="top" justify="start" className="flex-wrap">
+      <Select
+        options={Object.entries(PROVIDER_FORM_MAP).map(([key, { label }]) => ({ value: key, label }))}
+        placeholder="Select a Model provider."
+        value={provider}
+        onChange={handleProviderChange}
+        onClick={selectClickHandler}
+        dropdownMatchSelectWidth={false}
+        popupClassName="model-dropdown"
+        getPopupContainer={(triggerNode) => triggerNode.parentNode as HTMLElement}
+        dropdownAlign={{ offset: [0, 4] }}
+        placement="bottomLeft"
+        listHeight={256}
+      />
+      {
+        providerFormEntry &&
+        <Select
+          options={Object.entries(providerFormEntry.presets).map(([key, { label }]) => ({ value: key, label }))}
+          placeholder="Select a Preset"
+          value={preset}
+          onChange={handlePresetChange}
+          onClick={selectClickHandler}
+          dropdownMatchSelectWidth={false}
+          popupClassName="model-dropdown"
+          getPopupContainer={(triggerNode) => triggerNode.parentNode as HTMLElement}
+          dropdownAlign={{ offset: [0, 4] }}
+          placement="bottomLeft"
+          listHeight={256}
+        />
+      }
+    </Flex>
+  );
+
+  const items = [
+    {
+      key: "1",
+      label: headerContent,
+      children: FormComponent && (
+        <FormComponent
+          onChange={onChange}
+          value={value}
+          hideAdvancedToggles={hideAdvancedToggles}
+        />
+      )
+    }
+  ];
+
+  // Prevent collapse panel from expanding/collapsing when interacting with dropdowns
+  const handleCollapseChange = (key: string | string[]) => {
+    // Only allow manual toggling of the collapse panel
+    if (typeof key === 'object' && key.length === 0) {
+      setActiveKey([]);
+    } else if (typeof key === 'object' && key.length > 0) {
+      setActiveKey(['1']);
+    }
+  };
+
   return (
-    <Collapse>
-      <Collapse.Panel
-        key="1"
-        header={
-          <Flex gap="small" align="top" justify="start">
-            <Select
-              options={Object.entries(PROVIDER_FORM_MAP).map(([key, { label }]) => ({ value: key, label }))}
-              placeholder="Select a Model provider."
-              value={provider}
-              onChange={handleProviderChange}
-              onClick={(e) => e.stopPropagation()}
-              popupMatchSelectWidth={false}
-            />
-            {
-              providerFormEntry &&
-              <Select
-                options={Object.entries(providerFormEntry.presets).map(([key, { label }]) => ({ value: key, label }))}
-                placeholder="Select a Preset"
-                value={preset}
-                onChange={handlePresetChange}
-                onClick={(e) => e.stopPropagation()}
-                popupMatchSelectWidth={false}
-              />
-            }
-          </Flex>
-        }
-      >
-        {FormComponent && (
-          <FormComponent
-            onChange={onChange}
-            value={value}
-            hideAdvancedToggles={hideAdvancedToggles}
-          />
-        )}
-      </Collapse.Panel>
-    </Collapse>
+    <Collapse 
+      items={items} 
+      activeKey={activeKey} 
+      onChange={handleCollapseChange} 
+      className="model-selector-collapse" 
+    />
   );
 };
 
