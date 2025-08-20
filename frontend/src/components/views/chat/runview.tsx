@@ -9,6 +9,7 @@ import ApprovalButtons from "./approval_buttons";
 import ChatInput from "./chatinput";
 import { IStatus } from "../../types/app";
 import { RcFile } from "antd/es/upload";
+import ActiveAgentsSelector from "./ActiveAgentsSelector";
 
 const DETAIL_VIEWER_CONTAINER_ID = "detail-viewer-container";
 
@@ -37,6 +38,9 @@ interface RunViewProps {
   chatInputRef?: React.RefObject<any>;
   onExecutePlan?: (plan: IPlan) => void;
   enable_upload?: boolean;
+  agents: any[];
+  selectedAgents: string[];
+  onSelectedAgentsChange: (agents: string[]) => void;
 }
 
 const RunView: React.FC<RunViewProps> = ({
@@ -59,6 +63,9 @@ const RunView: React.FC<RunViewProps> = ({
   chatInputRef,
   onExecutePlan,
   enable_upload = false,
+  agents,
+  selectedAgents,
+  onSelectedAgentsChange,
 }) => {
   const threadContainerRef = useRef<HTMLDivElement | null>(null);
   const [novncPort, setNovncPort] = useState<string | undefined>();
@@ -667,6 +674,11 @@ const RunView: React.FC<RunViewProps> = ({
             width: "100%", // Always take full width of parent
           }}
         >
+          <ActiveAgentsSelector
+            agents={agents}
+            selectedAgents={selectedAgents}
+            onChange={onSelectedAgentsChange}
+          />
           <ChatInput
             ref={chatInputRef}
             onSubmit={(
