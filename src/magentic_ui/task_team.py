@@ -223,6 +223,7 @@ async def get_task_team(
         # TODO: Init from constructor?
         McpAgent._from_config(config)  # type: ignore
         for config in magentic_ui_config.mcp_agent_configs
+        if config.enabled
     ]
 
     if (

@@ -16,6 +16,7 @@ const DEFAULT_AGENT: MCPAgentConfig = {
   model_context_token_limit: undefined,
   tool_call_summary_format: "{tool_name}({arguments}): {result}",
   model_client: DEFAULT_OPENAI,
+  enabled: true,
 };
 
 interface MCPAgentModalProps {

@@ -10,6 +10,7 @@ export const MCPAgentConfigSchema = z.object({
   model_context_token_limit: z.number().optional(),
   tool_call_summary_format: z.string().optional(),
   model_client: ModelConfigSchema,
+  enabled: z.boolean().optional().default(true),
 });
 
 export type MCPAgentConfig = z.infer<typeof MCPAgentConfigSchema>;
