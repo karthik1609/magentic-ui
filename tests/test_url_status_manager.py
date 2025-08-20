@@ -46,3 +46,13 @@ async def test_url_status_manager():
     assert not url_status_manager.is_url_allowed("sample.com")
     assert not url_status_manager.is_url_allowed("sample.com/foo")
     assert not url_status_manager.is_url_allowed("sample.com/bar")
+
+
+@pytest.mark.asyncio
+async def test_empty_url_statuses_allow_all():
+    """An empty url_statuses dict should behave the same as None (allow all)."""
+
+    url_status_manager = UrlStatusManager(url_statuses={})
+
+    assert url_status_manager.is_url_allowed("http://example.com")
+    assert url_status_manager.is_url_allowed("https://another.example")

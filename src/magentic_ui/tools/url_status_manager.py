@@ -38,10 +38,14 @@ class UrlStatusManager:
         """
         self.url_statuses = None
         # a little bit of a hack to make sure there are no trailing slashes, since they mess with the comparison later on
-        if url_statuses is not None:
-            self.url_statuses = {
-                key.rstrip("/"): value for key, value in url_statuses.items()
-            }
+        if url_statuses:
+            cleaned = {key.rstrip("/"): value for key, value in url_statuses.items()}
+            # Treat an empty dictionary the same as not providing any
+            # URL statuses.  Without this, passing an empty dict would
+            # result in no URL ever being allowed since the checks below
+            # expect ``None`` to represent "allow all" semantics.
+            if cleaned:
+                self.url_statuses = cleaned
 
         self.url_block_list = url_block_list
 
