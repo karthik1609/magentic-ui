@@ -28,6 +28,7 @@ import {
 } from "../../types/plan";
 import SampleTasks from "./sampletasks";
 import ProgressBar from "./progressbar";
+import ActiveAgentsSelector from "./ActiveAgentsSelector";
 
 // Extend RunStatus for sidebar status reporting
 type SidebarRunStatus = BaseRunStatus | "final_answer_awaiting_input";
@@ -88,6 +89,19 @@ export default function ChatView({
 
   const settingsConfig = useSettingsStore((state) => state.config);
   const { user } = React.useContext(appContext);
+
+  const mcpAgents = React.useMemo(
+    () =>
+      ((session as any)?.mcp_agent_configs as any[]) ||
+      settingsConfig.mcp_agent_configs || [],
+    [session, settingsConfig.mcp_agent_configs]
+  );
+
+  const [selectedAgents, setSelectedAgents] = React.useState<string[]>([]);
+
+  React.useEffect(() => {
+    setSelectedAgents(mcpAgents.map((agent: any) => agent.name));
+  }, [mcpAgents]);
 
   // Core state
   const [currentRun, setCurrentRun] = React.useState<Run | null>(null);
@@ -735,7 +749,8 @@ export default function ChatView({
       const runSettings = {
         ...currentSettings,
         mcp_agent_configs: sessionAgents.filter(
-          (agent: any) => agent?.enabled !== false
+          (agent: any) =>
+            agent?.enabled !== false && selectedAgents.includes(agent.name)
         ),
       };
 
@@ -893,7 +908,8 @@ export default function ChatView({
       const sessionSettingsConfig = {
         ...settingsConfig,
         mcp_agent_configs: sessionAgents.filter(
-          (agent: any) => agent?.enabled !== false
+          (agent: any) =>
+            agent?.enabled !== false && selectedAgents.includes(agent.name)
         ),
         plan: {
           task: newPlan.task,
@@ -1152,6 +1168,9 @@ export default function ChatView({
                     chatInputRef={chatInputRef}
                     onExecutePlan={handleExecutePlan}
                     enable_upload={true} // Or true if needed
+                    agents={mcpAgents}
+                    selectedAgents={selectedAgents}
+                    onSelectedAgentsChange={setSelectedAgents}
                   />
                 )}
               </>
@@ -1172,6 +1191,11 @@ export default function ChatView({
               </div>
 
               <div className="w-full">
+                <ActiveAgentsSelector
+                  agents={mcpAgents}
+                  selectedAgents={selectedAgents}
+                  onChange={setSelectedAgents}
+                />
                 <ChatInput
                   ref={chatInputRef}
                   onSubmit={(
