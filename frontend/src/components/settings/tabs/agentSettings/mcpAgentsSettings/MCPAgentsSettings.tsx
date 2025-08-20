@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { List, Divider, Table, Button, Typography, Space, Tag } from "antd";
+import { List, Divider, Table, Button, Typography, Space, Tag, Switch } from "antd";
 import { Button as MagenticButton } from "../../../../common/Button";
 import { MCPAgentConfig } from "./types";
 import { DEFAULT_OPENAI } from "../modelSelector/modelConfigForms/OpenAIModelConfigForm";
@@ -68,6 +68,23 @@ const MCPAgentsSettings: React.FC<MCPAgentsSettingsProps> = ({ config, handleUpd
 
   // Table columns
   const columns = [
+    {
+      title: "Enabled",
+      dataIndex: "enabled",
+      key: "enabled",
+      width: 100,
+      render: (_: any, agent: MCPAgentConfig, index: number) => (
+        <Switch
+          checked={agent.enabled ?? true}
+          onChange={(checked) => {
+            const updatedAgents = agents.map((a, i) =>
+              i === index ? { ...a, enabled: checked } : a
+            );
+            handleUpdateConfig({ mcp_agent_configs: [...updatedAgents] });
+          }}
+        />
+      ),
+    },
     {
       title: 'Name',
       dataIndex: 'name',
