@@ -728,6 +728,17 @@ export default function ChatView({
         }
       }
 
+      // Build a run-specific settings config that only includes enabled MCP agents
+      const sessionAgents =
+        ((session as any)?.mcp_agent_configs as any[]) ||
+        currentSettings.mcp_agent_configs || [];
+      const runSettings = {
+        ...currentSettings,
+        mcp_agent_configs: sessionAgents.filter(
+          (agent: any) => agent?.enabled !== false
+        ),
+      };
+
       // Setup websocket connection
       const socket = setupWebSocket(run.id, fresh_socket, false);
       if (!socket) {
@@ -776,7 +787,7 @@ export default function ChatView({
           task: JSON.stringify(taskJson),
           files: processedFiles,
           team_config: teamConfig,
-          settings_config: currentSettings,
+          settings_config: runSettings,
         })
       );
       const sessionData = {
@@ -875,9 +886,15 @@ export default function ChatView({
         return;
       }
 
-      // Create a copy of the settings config instead of modifying directly
+      // Create a run-specific copy of the settings config including only enabled MCP agents
+      const sessionAgents =
+        ((session as any)?.mcp_agent_configs as any[]) ||
+        settingsConfig.mcp_agent_configs || [];
       const sessionSettingsConfig = {
         ...settingsConfig,
+        mcp_agent_configs: sessionAgents.filter(
+          (agent: any) => agent?.enabled !== false
+        ),
         plan: {
           task: newPlan.task,
           steps: newPlan.steps,
