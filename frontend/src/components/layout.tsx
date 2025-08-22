@@ -124,7 +124,7 @@ const MagenticUILayout = ({
           </main>
         </ConfigProvider>
         <div className="text-sm text-secondary mt-2 mb-2 text-center border-t border-secondary py-2 bg-gradient-to-r from-transparent via-blue-400/5 to-transparent">
-          fusionAIx can make mistakes. Please monitor its work and intervene if necessary.
+          AI can make mistakes. Please monitor its work and intervene if necessary.
         </div>
       </div>
     </div>

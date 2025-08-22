@@ -151,31 +151,6 @@ const AgentSettingsTab: React.FC<SettingsTabProps> = ({
                 Magentic-UI was started with an LLM config file ({configFilePath}).
                 LLM configurations set here will be ignored as they are overridden by the config file.
               </Typography.Text>
-              {configContent && (
-                <Collapse
-                  ghost
-                  size="small"
-                  style={{ marginTop: 8 }}
-                  items={[{
-                    key: 'config',
-                    label: 'Show Config Content',
-                    children: (
-                      <div style={{ maxHeight: '300px', overflow: 'auto' }}>
-                        <SyntaxHighlighter
-                          language="json"
-                          style={tomorrow}
-                          customStyle={{
-                            fontSize: '12px',
-                            margin: 0,
-                          }}
-                        >
-                          {JSON.stringify(configContent, null, 2)}
-                        </SyntaxHighlighter>
-                      </div>
-                    )
-                  }]}
-                />
-              )}
             </div>
           }
           type="warning"

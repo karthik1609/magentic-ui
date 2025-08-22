@@ -72,6 +72,8 @@ const MCPServerForm: React.FC<MCPServerFormProps> = ({ server, idx, handleServer
                     placeholder={`Server Name e.g. `}
                     status={serverNameError ? 'error' : ''}
                     onChange={e => handleServerChange(idx, { ...server, server_name: e.target.value })}
+                    onMouseDown={(e) => e.stopPropagation()}
+                    onClick={(e) => e.stopPropagation()}
 
                 />
             </Tooltip>
@@ -111,7 +113,8 @@ const MCPServerForm: React.FC<MCPServerFormProps> = ({ server, idx, handleServer
         {
             key: "1",
             label: headerContent,
-            children: panelContent
+            children: panelContent,
+            collapsible: 'icon'
         }
     ];
 

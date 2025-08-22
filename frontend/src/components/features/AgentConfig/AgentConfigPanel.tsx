@@ -258,26 +258,6 @@ const AgentConfigPanel: React.FC = () => {
                   Magentic-UI was started with an LLM config file ({configFilePath}).
                   LLM configurations set here will be ignored as they are overridden by the config file.
                 </Typography.Text>
-                {configContent && (
-                  <details className="mt-3">
-                    <summary className="cursor-pointer text-blue-700 hover:text-magenta-700 font-medium transition-colors">
-                      Show Config Content
-                    </summary>
-                    <div className="mt-3 max-h-60 overflow-auto bg-secondary rounded-lg p-3">
-                      <SyntaxHighlighter
-                        language="json"
-                        style={tomorrow}
-                        customStyle={{
-                          fontSize: '12px',
-                          margin: 0,
-                          background: 'transparent',
-                        }}
-                      >
-                        {JSON.stringify(configContent, null, 2)}
-                      </SyntaxHighlighter>
-                    </div>
-                  </details>
-                )}
               </div>
             }
             type="warning"

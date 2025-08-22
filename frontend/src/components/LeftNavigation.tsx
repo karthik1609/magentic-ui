@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Home, Settings, MessageSquare, Layers, PlusCircle, Server, ChevronRight, ChevronLeft, MoreHorizontal } from 'lucide-react';
 import { Badge, Tooltip, Spin } from 'antd';
 import { Session, RunStatus } from './types/datamodel';
@@ -76,14 +76,17 @@ const LeftNavigation: React.FC<LeftNavigationProps> = ({
 }) => {
   const [showSessionsTable, setShowSessionsTable] = useState(false);
   
-  // When chat is clicked, show sessions list
-  useEffect(() => {
-    if (activeSection === 'chat') {
-      setShowSessionsTable(true);
-    } else {
-      setShowSessionsTable(false);
-    }
-  }, [activeSection]);
+  // Compute recent sessions (last updated or created), limit to 6
+  const recentSessions = useMemo(() => {
+    const getTime = (s: Session) => {
+      const t = s.updated_at ?? s.created_at;
+      return t ? new Date(t).getTime() : 0;
+    };
+    return [...sessions]
+      .sort((a, b) => getTime(b) - getTime(a))
+      .slice(0, 6);
+  }, [sessions]);
+  
   
   const handleBackToNav = () => {
     setShowSessionsTable(false);
@@ -168,14 +171,7 @@ const LeftNavigation: React.FC<LeftNavigationProps> = ({
               onClick={() => onNavigate('home')} 
               isExpanded={isExpanded}
             />
-            <NavItem 
-              icon={<MessageSquare className="w-5 h-5" />} 
-              label="Chat" 
-              active={activeSection === 'chat'} 
-              onClick={() => onNavigate('chat')} 
-              isExpanded={isExpanded}
-              className={activeSection === 'chat' ? 'bg-gradient-to-r from-blue-700 via-blue-600 to-blue-500 !text-white shadow-md' : ''}
-            />
+           
             <NavItem 
               icon={<Server className="w-5 h-5" />} 
               label="MCP Servers" 
@@ -198,6 +194,50 @@ const LeftNavigation: React.FC<LeftNavigationProps> = ({
               onClick={() => onNavigate('agents')} 
               isExpanded={isExpanded}
             />
+             <NavItem 
+              icon={<MessageSquare className="w-5 h-5" />} 
+              label="Chat" 
+              active={activeSection === 'chat'} 
+              onClick={() => {
+                // Explicitly open the sessions list only when clicking the Chat nav item
+                setShowSessionsTable(true);
+                onNavigate('chat');
+              }} 
+              isExpanded={isExpanded}
+              className={activeSection === 'chat' ? 'bg-gradient-to-r from-blue-700 via-blue-600 to-blue-500 !text-white shadow-md' : ''}
+            />
+
+            {/* Recent Sessions Quick Access */}
+            {recentSessions.length > 0 && (
+              <div className={`${isExpanded ? 'px-3' : 'px-0'} mt-0`}>
+                {isExpanded && (
+                  <div className="text-[10px] uppercase tracking-wider text-gray-500 mb-1">Recent</div>
+                )}
+                <div className={`${isExpanded ? 'space-y-1' : 'flex flex-col items-center gap-2'}`}>
+                  {recentSessions.map((s) => (
+                    <Tooltip title={!isExpanded ? s.name : ''} placement="right" key={s.id}>
+                      <div
+                        className={`w-full ${isExpanded ? 'px-2 py-2' : 'w-8 h-8'} cursor-pointer rounded-md transition-colors ${currentSession?.id === s.id ? 'bg-[#2f3a5f] text-white' : 'bg-[#2a2a2a] hover:bg-[#333333] text-gray-300'}`}
+                        onClick={() => {
+                          // Selecting a recent session should NOT open the sessions list
+                          setShowSessionsTable(false);
+                          onNavigate('chat');
+                          onSelectSession && onSelectSession(s);
+                        }}
+                      >
+                        {isExpanded ? (
+                          <div className="truncate text-xs">{s.name}</div>
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <MessageSquare className="w-4 h-4" />
+                          </div>
+                        )}
+                      </div>
+                    </Tooltip>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Bottom Navigation */}

@@ -48,7 +48,7 @@ const ContentHeader = ({
                   <img src="/images/bg/fx-logo.svg" alt="fusionAIx Logo" className="w-12 h-12" />
                 </div>
               <div>
-                <div className="text-white text-lg font-semibold">fusionAIx Studio</div>
+                <div className="text-white text-lg font-semibold">fxAI Studio</div>
                 <div className="text-gray-400 text-xs">AI Agent Management Platform</div>
               </div>
             </div>
