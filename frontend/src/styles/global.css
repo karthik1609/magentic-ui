@@ -421,16 +421,10 @@ a:hover {
 /* Fix for Ant Design Select dropdowns */
 .ant-select-dropdown {
   z-index: 9999 !important;
-  pointer-events: all !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  display: block !important;
   background: #2a2a2a !important;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3) !important;
   border-radius: 8px !important;
   margin-top: 4px !important;
-  /* Remove fixed positioning which might cause issues */
-  transform: none !important; /* Prevent unwanted transforms */
 }
 
 .ant-select-dropdown .ant-select-item {
@@ -483,7 +477,7 @@ a:hover {
 
 /* Fix for dropdown rendering issues */
 .ant-select-dropdown {
-  position: absolute !important;
+  /* Use Ant Design's default positioning to avoid state glitches */
 }
 
 /* Ensure dropdown has proper dimensions */

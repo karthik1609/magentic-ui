@@ -204,7 +204,8 @@ export const SessionManager: React.FC = () => {
     if (!user?.email || !selectedSession.id) return;
 
     try {
-      setActiveSubMenuItem("");
+      // Ensure the main content switches to the chat view when a session is selected
+      setActiveSubMenuItem("chat");
       setIsLoading(true);
       const data = await sessionAPI.getSession(selectedSession.id, user.email);
       if (!data) {
@@ -557,7 +558,7 @@ export const SessionManager: React.FC = () => {
                 <div className="w-20 h-20 bg-gradient-to-br rounded-xl flex items-center justify-center mx-auto mb-5 shadow-lg hover:shadow-xl transition-all duration-300">
                   <img src="/images/bg/fx-logo.svg" alt="fusionAIx Logo" className="w-12 h-12" />
                 </div>
-                <h2 className="text-2xl font-semibold text-white">Welcome to fusionAIx Studio</h2>
+                <h2 className="text-2xl font-semibold text-white">Welcome to fxAI Studio</h2>
                 <p className="text-gray-400 mb-2">Your AI-powered workspace for enhanced productivity</p>
                 <p className="text-gray-500 text-sm">Experience the future of work with our intelligent assistant.</p>
               </div>
